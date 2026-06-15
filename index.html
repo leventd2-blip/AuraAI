@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuraAI</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Markdown renderer for AI responses -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Syntax highlighting for code blocks -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     AUTH SCREEN (Login / Register)
+     Shown when user is NOT logged in
+════════════════════════════════════════════ -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-container">
+    <!-- Logo -->
+    <div class="auth-logo">
+      <div class="logo-icon">✦</div>
+      <h1>AuraAI</h1>
+      <p>Your intelligent AI companion</p>
+    </div>
+
+    <!-- Tab switcher: Login / Register -->
+    <div class="auth-tabs">
+      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Log In</button>
+      <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Create Account</button>
+    </div>
+
+    <!-- Error message box -->
+    <div id="auth-error" class="auth-error hidden"></div>
+
+    <!-- Success message box -->
+    <div id="auth-success" class="auth-success hidden"></div>
+
+    <!-- LOGIN FORM -->
+    <div id="form-login" class="auth-form">
+      <div class="input-group">
+        <label>Email Address</label>
+        <input type="email" id="login-email" placeholder="you@example.com" />
+      </div>
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="Your password" />
+      </div>
+      <button class="auth-btn" onclick="handleLogin()">
+        <span id="login-btn-text">Log In</span>
+      </button>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="form-register" class="auth-form hidden">
+      <div class="input-group">
+        <label>Email Address</label>
+        <input type="email" id="register-email" placeholder="you@example.com" />
+      </div>
+      <div class="input-group">
+        <label>Password (min 6 characters)</label>
+        <input type="password" id="register-password" placeholder="Choose a password" />
+      </div>
+      <button class="auth-btn" onclick="handleRegister()">
+        <span id="register-btn-text">Create Account</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     MAIN APP SCREEN (Chat Interface)
+     Shown when user IS logged in
+════════════════════════════════════════════ -->
+<div id="app-screen" class="app-screen hidden">
+
+  <!-- LEFT SIDEBAR: Chat history -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <span class="logo-icon-small">✦</span>
+        <span>AuraAI</span>
+      </div>
+      <button class="new-chat-btn" onclick="createNewChat()" title="New Chat">
+        ✏️ New Chat
+      </button>
+    </div>
+
+    <div class="chat-list" id="chat-list">
+      <!-- Chat history items inserted here by JavaScript -->
+      <div class="no-chats">No chats yet.<br/>Click "New Chat" to start!</div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">👤</div>
+        <div class="user-email" id="user-email-display">user@email.com</div>
+      </div>
+      <button class="logout-btn" onclick="handleLogout()" title="Log Out">
+        🚪 Log Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CHAT AREA -->
+  <main class="chat-area">
+
+    <!-- Top bar -->
+    <div class="chat-topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle Sidebar">☰</button>
+      <span id="current-chat-title">Select or create a chat</span>
+    </div>
+
+    <!-- Welcome screen (shown when no chat is selected) -->
+    <div id="welcome-screen" class="welcome-screen">
+      <div class="welcome-content">
+        <div class="welcome-logo">✦</div>
+        <h2>Welcome to AuraAI</h2>
+        <p>Start a new conversation or select one from the sidebar.</p>
+        <div class="welcome-examples">
+          <button class="example-btn" onclick="quickStart('Explain quantum computing in simple terms')">
+            🔬 Explain quantum computing
+          </button>
+          <button class="example-btn" onclick="quickStart('Write a Python function to sort a list')">
+            💻 Write me some code
+          </button>
+          <button class="example-btn" onclick="quickStart('Give me 5 creative business ideas')">
+            💡 Creative business ideas
+          </button>
+          <button class="example-btn" onclick="quickStart('Help me write a professional email')">
+            ✉️ Help write an email
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages container -->
+    <div id="messages-container" class="messages-container hidden">
+      <!-- Messages inserted here by JavaScript -->
+    </div>
+
+    <!-- Typing indicator -->
+    <div id="typing-indicator" class="typing-indicator hidden">
+      <div class="typing-bubble">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+      </div>
+      <span>AuraAI is thinking...</span>
+    </div>
+
+    <!-- Message input area -->
+    <div class="input-area" id="input-area">
+      <div class="input-wrapper">
+        <textarea
+          id="message-input"
+          placeholder="Message AuraAI..."
+          rows="1"
+          onkeydown="handleKeyDown(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Send message">
+          ➤
+        </button>
+      </div>
+      <p class="input-hint">Press Enter to send · Shift+Enter for new line</p>
+    </div>
+
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
