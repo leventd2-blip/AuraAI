@@ -1,0 +1,27 @@
+# ============================================
+# .gitignore - Files NOT uploaded to GitHub
+# ============================================
+
+# Your secret environment variables - NEVER upload this!
+.env
+
+# Database file (user data stays local)
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Node modules folder (too large, installed via npm install)
+node_modules/
+
+# Log files
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
